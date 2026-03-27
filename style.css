@@ -1,15 +1,21 @@
+/* CSS Styles for Snake Game */
+
+/* Reset all margins, padding, and set box-sizing for consistent layout */
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+/* Set full height for html and body */
 html,body{
     height: 100%;
     width: 100%;
 }
+/* Define CSS custom properties (variables) for colors, spacing, and borders */
 :root{
     /* Background Color */
-    --Background-color: #0c0c0c;
+    --Background-color: #1d1c1c;
+    --bg-fill-color:rgb(18, 164, 162);
 
     /* Text Color */
     --text-color: #f0f0f0;
@@ -26,6 +32,7 @@ html,body{
 
     /* Border variables */
     --border-primary-color: #333333;
+    --Board-color: #7a7a7a;
 
     /* Border radius variables */
         --Border-radius-xs: 4px;
@@ -35,27 +42,62 @@ html,body{
         --Border-radius-xl: 20px;
         --Border-radius-2xl: 24px;
 }
+/* Styles for html element: background, text color, and font family */
 html{
     background-color: var(--Background-color);
     color: var(--text-color);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
+/* Styles for main and section elements: full width and height */
 main,section{
 width: 100%;
 height: 100%;
  
 }
+/* Styles for section: padding and flex layout */
 section{
 padding: var(--space-2xl);
+height: 100%;
+display: flex;
+flex-direction: column;
+gap: var(--Border-radius-lg);
 }
+/* Styles for the infos container: flex layout for info items */
 section .infos{
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
+    gap: var(--Border-radius-lg);
+
 }
+/* Styles for individual info items: padding, border, and border radius */
 .info{
     padding: var(--space-sm) var(--space-md);
-    border:1px solid var(--border-primary-color);
+    border:2px solid var(--Board-color);
     border-radius: var(--Border-radius-sm);
 }
+
+/* Styles for the game board: border, flex grow, and grid layout */
+.Board{
+    border:2px solid var(--Board-color);
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns:  repeat(auto-fill ,minmax(40px,1fr));
+    grid-template-rows: repeat(auto-fill,minmax(40px,1fr));
+
+
+
+}
+/* Styles for individual blocks: border */
+.block{
+    /* width: 30px;
+    height: 30px; */
+    border: 1px solid var(--border-primary-color);  
+}
+
+/* Styles for filled blocks (snake segments): background color */
+.fill{
+    background-color: var(--bg-fill-color);
+}
+ 
