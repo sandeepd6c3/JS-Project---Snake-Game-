@@ -1,22 +1,37 @@
+<!-- Snake Game HTML Structure -->
+
+<!-- Document type declaration -->
 <!DOCTYPE html>
 <html lang="en">
+<!-- Head section: Contains metadata and links to external resources -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake Game</title>
+    <!-- Link to the external CSS stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
+<!-- Body section: Contains the visible content of the page -->
 <body>
     
+    <!-- Main container for the game layout -->
     <main>
+        <!-- Section for game information and board -->
         <section>
+            <!-- Info bar displaying high score, score, and time -->
             <div class="infos">
                 <h3 class="info">High Score: <span id="highScore">0</span></h3>
                 <h3 class="info">Score:<span id="score">0</span></h3>
                 <h3 class="info">Time : <span id="time">00-00</span></h3>
             </div>
            
+            <!-- Game board where the snake and food will be displayed -->
+            <div class="Board">
+                 
+            </div>
         </section>
     </main>
+    <!-- Link to the external JavaScript file -->
+    <script src="script.js"></script>
 </body>
 </html>
