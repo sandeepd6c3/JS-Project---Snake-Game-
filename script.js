@@ -6,6 +6,7 @@ let Board=document.querySelector(".Board");
 // Define block dimensions (height and width in pixels)
  const blockheight=40;
     const blockwidth=40;
+    let setIntervalId=null;
 
 // Array to store references to all block elements for easy access
 const blocks =[];
@@ -18,7 +19,12 @@ const blocks =[];
     const snake=[{x:5,y:5}]
 
 // Initial direction of the snake movement
-let direction='down';
+let direction='right';
+
+let food ={
+  x:Math.floor(Math.random()*rows ),
+  y:Math.floor(Math.random()*cols),
+}
 
 // Create a grid of block elements and store them in the blocks array
     for(let row=0; row<rows; row++){
@@ -35,18 +41,10 @@ let direction='down';
 // Function to render the snake on the board by adding 'fill' class to snake segments
     function render(){
 
-      snake.forEach(segment=>{
-        console.log(segment);
-        blocks[`${segment.x}-${segment.y}`].classList.add('fill');
-        
-        
-      })
+       let head=null
 
-      }
+  blocks[`${food.x}-${food.y}`].classList.add("food");
 
-// Game loop that runs every 500ms to move the snake
-   setInterval(()=>{
-    let head=null
 
     // Determine the new head position based on current direction
     if (direction==='left'){
@@ -61,6 +59,21 @@ let direction='down';
 head={x:snake[0].x-1,y:snake[0].y}
     }
 
+    if(head.x<0 || head.x>=rows ||head.y<0 || head.y>=cols){
+      alert("Game Over ")
+      clearInterval(setIntervalId)
+    }
+
+    if(head.x==food.x && head.y==food.y){
+        blocks[`${food.x}-${food.y}`].classList.remove("food");
+        food ={
+  x:Math.floor(Math.random()*rows ),
+  y:Math.floor(Math.random()*cols),
+}
+ blocks[`${food.x}-${food.y}`].classList.add("food");
+ snake.unshift(head);
+    }
+
 // Remove 'fill' class from current snake positions before moving
     snake.forEach(segment => {
       blocks[`${segment.x}-${segment.y}`].classList.remove('fill');
@@ -70,7 +83,35 @@ head={x:snake[0].x-1,y:snake[0].y}
     snake.unshift(head);
 // Remove the tail to maintain snake length
     snake.pop();
-    
+
+      snake.forEach(segment=>{
+        console.log(segment);
+        blocks[`${segment.x}-${segment.y}`].classList.add('fill');
+        
+        
+      })
+
+      }
+
+// Game loop that runs every 500ms to move the snake
+   setIntervalId=setInterval(()=>{
+   
 // Render the updated snake
 render();
-   },500)     
+   },200)     
+
+
+   addEventListener("keydown",(event)=>{
+   if(event.key=="ArrowUp"){
+    direction='up'
+   }else if (event.key=="ArrowDown"){
+    direction='down'
+   }
+   else if(event.key=="ArrowLeft"){
+    direction='left'
+   }
+   else if (event.key=="ArrowRight"){
+    direction='right'
+   }
+    
+   })
