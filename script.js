@@ -1,179 +1,295 @@
-// Snake Game JavaScript Code
-
-// Select the game board element from the DOM
-let Board=document.querySelector(".Board");
-
-const startbutton=document.querySelector(".btn-start")
-const modal=document.querySelector(".modal");
-
-const startgamemodal=document.querySelector(".start-game");
-const gameovermodal=document.querySelector(".game-over");
-const restartbutton=document.querySelector(".btn-restart");
+// ============================
+// 🐍 Snake Game - JavaScript
+// ============================
 
 
-const highscoreElement=document.querySelector("#high-score");
-const scoreElement=document.querySelector("#score");
-const timeElement=document.querySelector("#time");
+
+// ============================
+// 🔹 DOM ELEMENTS
+// ============================
+
+// Game Board
+let Board = document.querySelector(".Board");
+
+// Buttons & Modals
+const startbutton = document.querySelector(".btn-start");
+const modal = document.querySelector(".modal");
+const startgamemodal = document.querySelector(".start-game");
+const gameovermodal = document.querySelector(".game-over");
+const restartbutton = document.querySelector(".btn-restart");
+
+// Info Elements
+const highscoreElement = document.querySelector("#high-Score");
+const scoreElement = document.querySelector("#score");
+const timeElement = document.querySelector("#time");
 
 
-let highscore=0; 
-let score=0;
-let time=`00-00`;
 
-// Define block dimensions (height and width in pixels)
- const blockheight=40;
-    const blockwidth=40;
-    let setIntervalId=null;
+// ============================
+// 🔹 GAME STATE VARIABLES
+// ============================
 
-// Array to store references to all block elements for easy access
-const blocks =[];
+// Highscore (from localStorage)
+let highscore = parseInt(localStorage.getItem("high-Score")) || 0;
 
-// Calculate the number of columns and rows based on board size and block size
-    const cols=Math.floor(Board.clientWidth/blockwidth);
-    const rows=Math.floor(Board.clientHeight/blockheight);
+// Game stats
+let score = 0;
+let time = `00-00`;
 
-// Initial snake position as an array of objects with x (row) and y (column) coordinates
-   let  snake=[{x:1,y:3}]
+// Display highscore
+highscoreElement.innerText = highscore;
 
-// Initial direction of the snake movement
-let direction='right';
 
-let food ={
-  x:Math.floor(Math.random()*rows ),
-  y:Math.floor(Math.random()*cols),
+
+// ============================
+// 🔹 BOARD CONFIGURATION
+// ============================
+
+// Block size
+const blockheight = 40;
+const blockwidth = 40;
+
+// Game loop IDs
+let setIntervalId = null;
+let timerIntervalId = null;
+
+// Store all blocks
+const blocks = [];
+
+// Grid dimensions
+const cols = Math.floor(Board.clientWidth / blockwidth);
+const rows = Math.floor(Board.clientHeight / blockheight);
+
+
+
+// ============================
+// 🔹 INITIAL GAME STATE
+// ============================
+
+// Snake starting position
+let snake = [{ x: 1, y: 3 }];
+
+// Initial direction
+let direction = "right";
+
+// Food position
+let food = {
+  x: Math.floor(Math.random() * rows),
+  y: Math.floor(Math.random() * cols),
+};
+
+
+
+// ============================
+// 🔹 CREATE GAME GRID
+// ============================
+
+for (let row = 0; row < rows; row++) {
+  for (let col = 0; col < cols; col++) {
+
+    let block = document.createElement("div");
+    block.classList.add("block");
+
+    Board.appendChild(block);
+
+    // Save reference
+    blocks[`${row}-${col}`] = block;
+  }
 }
 
-// Create a grid of block elements and store them in the blocks array
-    for(let row=0; row<rows; row++){
-      for(let col=0; col<cols; col++){
-        
-        let block=document.createElement('div');
-        block.classList.add("block");
-        Board.appendChild(block);
-        // block.innerText=`${row}-${col}`; // Optional: Uncomment to show coordinates on blocks
-        blocks[`${row}-${col}`]=block;
-      }
-    }
 
-// Function to render the snake on the board by adding 'fill' class to snake segments
-    function render(){
 
-       let head=null
+// ============================
+// 🔹 GAME RENDER FUNCTION
+// ============================
 
+function render() {
+
+  let head = null;
+
+  // Show food
   blocks[`${food.x}-${food.y}`].classList.add("food");
 
 
-    // Determine the new head position based on current direction
-    if (direction==='left'){
-      head={x:snake[0].x,y:snake[0].y-1}
+  // 🔸 Calculate new head position
+  if (direction === "left") {
+    head = { x: snake[0].x, y: snake[0].y - 1 };
 
-    }else if(direction==='right'){
-      head={x:snake[0].x,y:snake[0].y+1}
-    }
-    else if (direction==='down'){
-      head={x:snake[0].x+1,y:snake[0].y}
-    }else if (direction==='up'){
-head={x:snake[0].x-1,y:snake[0].y}
-    }
+  } else if (direction === "right") {
+    head = { x: snake[0].x, y: snake[0].y + 1 };
 
-    if(head.x<0 || head.x>=rows ||head.y<0 || head.y>=cols){
-      
-      clearInterval(setIntervalId)
-      
-      modal.style.display="flex"
+  } else if (direction === "down") {
+    head = { x: snake[0].x + 1, y: snake[0].y };
 
-      startgamemodal.style.display="none";
-      gameovermodal.style.display="flex";
-      return;
-    }
+  } else if (direction === "up") {
+    head = { x: snake[0].x - 1, y: snake[0].y };
+  }
 
-    if(head.x==food.x && head.y==food.y){
-        blocks[`${food.x}-${food.y}`].classList.remove("food");
-        food ={
-        x:Math.floor(Math.random()*rows ),
-           y:Math.floor(Math.random()*cols),
-}
- blocks[`${food.x}-${food.y}`].classList.add("food");
- snake.unshift(head);
- score+=10;
- scoreElement.innerText=score;
-    }
 
-// Remove 'fill' class from current snake positions before moving
-    snake.forEach(segment => {
-      blocks[`${segment.x}-${segment.y}`].classList.remove('fill');
-    });
+  // 🔸 Wall collision
+  if (head.x < 0 || head.x >= rows || head.y < 0 || head.y >= cols) {
 
-// Add new head to the front of the snake
+    clearInterval(setIntervalId);
+
+    modal.style.display = "flex";
+    startgamemodal.style.display = "none";
+    gameovermodal.style.display = "flex";
+
+    return;
+  }
+
+
+  // 🔸 Food collision
+  if (head.x == food.x && head.y == food.y) {
+
+    blocks[`${food.x}-${food.y}`].classList.remove("food");
+
+    // New food
+    food = {
+      x: Math.floor(Math.random() * rows),
+      y: Math.floor(Math.random() * cols),
+    };
+
+    blocks[`${food.x}-${food.y}`].classList.add("food");
+
+    // Grow snake
     snake.unshift(head);
 
-    
-   
-// Remove the tail to maintain snake length
-    snake.pop();
+    // Update score
+    score += 10;
+    scoreElement.innerText = score;
 
-      snake.forEach(segment=>{
-        console.log(segment);
-        blocks[`${segment.x}-${segment.y}`].classList.add('fill');
-        
-        
-      })
-
-      }
-
-// Game loop that runs every 500ms to move the snake
-//    setIntervalId=setInterval(()=>{
-   
-// // Render the updated snake
-// render();
-//    },200)     
-
-startbutton.addEventListener("click",()=>{
-  modal.style.display="none"
-    setIntervalId=setInterval(() => {
-      render();
-
-    }, 500);
-   })
+    // Update highscore
+    if (score > highscore) {
+      highscore = score;
+      highscoreElement.innerText = highscore;
+      localStorage.setItem("high-Score", highscore.toString());
+    }
+  }
 
 
-   restartbutton.addEventListener("click",restartgame)
+  // 🔸 Clear previous snake
+  snake.forEach(segment => {
+    blocks[`${segment.x}-${segment.y}`].classList.remove("fill");
+  });
 
-   function restartgame(){
-clearInterval(setIntervalId);
 
-     modal.style.display="none";
- 
-blocks[`${food.x}-${food.y}`].classList.remove("food");
+  // 🔸 Move snake
+  snake.unshift(head);
+  snake.pop();
 
-snake.forEach(segment=>{
-        console.log(segment);
-        blocks[`${segment.x}-${segment.y}`].classList.remove('fill');
-        
-        
-      })
 
-     snake=[{x:1,y:3}]
-      direction='right';
+  // 🔸 Render snake
+  snake.forEach(segment => {
+    console.log(segment);
+    blocks[`${segment.x}-${segment.y}`].classList.add("fill");
+  });
+}
 
-     food ={ x:Math.floor(Math.random()*rows ), y:Math.floor(Math.random()*cols),}
 
-     setIntervalId=setInterval(() => {render()}, 500);
-   }
 
-   addEventListener("keydown",(event)=>{
-   if(event.key=="ArrowUp"){
-    direction='up'
-   }else if (event.key=="ArrowDown"){
-    direction='down'
-   }
-   else if(event.key=="ArrowLeft"){
-    direction='left'
-   }
-   else if (event.key=="ArrowRight"){
-    direction='right'
-   }
-    
-   })
+// ============================
+// 🔹 START GAME
+// ============================
 
-    
+startbutton.addEventListener("click", () => {
+
+  modal.style.display = "none";
+
+  // Game loop
+  setIntervalId = setInterval(() => {
+    render();
+  }, 500);
+
+  // Timer
+  timerIntervalId = setInterval(() => {
+
+    let [min, sec] = time.split("-").map(Number);
+
+    sec = sec + 1;
+
+    if (sec == 60) {
+      min += 1;
+      sec = 0;
+    }
+
+    time = `${min}-${sec}`;
+    timeElement.innerText = time;
+
+  }, 1000);
+});
+
+
+
+// ============================
+// 🔹 RESTART GAME
+// ============================
+
+restartbutton.addEventListener("click", restartgame);
+
+function restartgame() {
+
+  clearInterval(setIntervalId);
+
+  modal.style.display = "none";
+
+
+  // Remove food
+  blocks[`${food.x}-${food.y}`].classList.remove("food");
+
+
+  // Clear snake
+  snake.forEach(segment => {
+    console.log(segment);
+    blocks[`${segment.x}-${segment.y}`].classList.remove("fill");
+  });
+
+
+  // Reset values
+  score = 0;
+  scoreElement.innerText = score;
+
+  time = `00-00`;
+  timeElement.innerText = time;
+
+
+  // Reset snake
+  snake = [{ x: 1, y: 3 }];
+  direction = "right";
+
+
+  // New food
+  food = {
+    x: Math.floor(Math.random() * rows),
+    y: Math.floor(Math.random() * cols),
+  };
+
+
+  // Restart loop
+  setIntervalId = setInterval(() => {
+    render();
+  }, 500);
+}
+
+
+
+// ============================
+// 🔹 KEYBOARD CONTROLS
+// ============================
+
+addEventListener("keydown", (event) => {
+
+  if (event.key == "ArrowUp") {
+    direction = "up";
+
+  } else if (event.key == "ArrowDown") {
+    direction = "down";
+
+  } else if (event.key == "ArrowLeft") {
+    direction = "left";
+
+  } else if (event.key == "ArrowRight") {
+    direction = "right";
+  }
+
+});

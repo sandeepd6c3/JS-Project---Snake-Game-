@@ -1,48 +1,100 @@
-<!-- Snake Game HTML Structure -->
+<!-- ============================ -->
+<!-- 🐍 Snake Game HTML Structure -->
+<!-- ============================ -->
 
-<!-- Document type declaration -->
 <!DOCTYPE html>
 <html lang="en">
-<!-- Head section: Contains metadata and links to external resources -->
+
+<!-- ============================ -->
+<!-- 🔹 HEAD SECTION -->
+<!-- ============================ -->
 <head>
+    <!-- Character encoding -->
     <meta charset="UTF-8">
+
+    <!-- Responsive design for mobile -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Page title -->
     <title>Snake Game</title>
-    <!-- Link to the external CSS stylesheet -->
+
+    <!-- External CSS file -->
     <link rel="stylesheet" href="style.css">
 </head>
-<!-- Body section: Contains the visible content of the page -->
+
+
+<!-- ============================ -->
+<!-- 🔹 BODY SECTION -->
+<!-- ============================ -->
 <body>
-    
-    <!-- Main container for the game layout -->
+
+    <!-- ============================ -->
+    <!-- 🔹 MAIN GAME CONTAINER -->
+    <!-- ============================ -->
     <main>
-        <!-- Section for game information and board -->
+
+        <!-- ============================ -->
+        <!-- 🔹 GAME SECTION (INFO + BOARD) -->
+        <!-- ============================ -->
         <section>
-            <!-- Info bar displaying high score, score, and time -->
+
+            <!-- ============================ -->
+            <!-- 🔹 GAME INFO BAR -->
+            <!-- ============================ -->
             <div class="infos">
-                <h3 class="info">High Score: <span id="highScore">0</span></h3>
-                <h3 class="info">Score:<span id="score">0</span></h3>
-                <h3 class="info">Time : <span id="time">00-00</span></h3>
+
+                <!-- High Score Display -->
+                <h3 class="info">
+                    High Score:
+                    <span id="high-Score">0</span>
+                </h3>
+
+                <!-- Current Score Display -->
+                <h3 class="info">
+                    Score:
+                    <span id="score">0</span>
+                </h3>
+
+                <!-- Timer Display -->
+                <h3 class="info">
+                    Time:
+                    <span id="time">00-00</span>
+                </h3>
+
             </div>
-           
-            <!-- Game board where the snake and food will be displayed -->
+
+
+            <!-- ============================ -->
+            <!-- 🔹 GAME BOARD -->
+            <!-- ============================ -->
             <div class="Board">
-                 
+                <!-- Snake and food blocks will be generated via JavaScript -->
             </div>
+
         </section>
+        
+        <!-- ============================ -->
+        <!-- 🔹 MODAL (START + GAME OVER) -->
+        <!-- ============================ -->
         <div class="modal">
+
+            <!-- 🔹 Start Game Screen -->
             <div class="start-game">
                 <h3>Welcome to the snake game</h3>
                 <button class="btn btn-start">Start Game</button>
-                
             </div>
-             <div class="game-over">
-                    <h3>Game Over</h3>
-                    <button class="btn btn-restart">Restart Game</button>
-                </div>
+
+            <!-- 🔹 Game Over Screen -->
+            <div class="game-over">
+                <h3>Game Over</h3>
+                <button class="btn btn-restart">Restart Game</button>
+            </div>
+
         </div>
+
     </main>
-    <!-- Link to the external JavaScript file -->
+
     <script src="script.js"></script>
+
 </body>
 </html>
